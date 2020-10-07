@@ -4,8 +4,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
+import pageObcjects.AddCustomerPage;
 import pageObcjects.LoginPage;
 
 public class Steps extends BaseClass {
@@ -56,42 +57,73 @@ public class Steps extends BaseClass {
 
     @Then("User can view Dashboard")
     public void user_can_view_dashboard() {
+        addCust = new AddCustomerPage(driver);
+        Assert.assertEquals("Dashboard / nopCommerce administration", addCust.getPageTitle());
+
 
     }
 
     @When("User click on customer Menu")
-    public void user_click_on_customer_menu() {
+    public void user_click_on_customer_menu() throws InterruptedException {
+        addCust.clickOnCustomersMenu();
+        Thread.sleep(3000);
 
     }
+
     @When("click on customers Menu Item")
     public void click_on_customers_menu_item() {
-
+        addCust.clickOnCustomersMenuItem();
     }
+
     @When("click on Add new button")
     public void click_on_add_new_button() {
+        addCust.clickOnAddnew();
 
     }
+
     @Then("User can view Add new customer page")
-    public void user_can_view_add_new_customer_page() {
-
+    public void user_can_view_add_new_customer_page() throws InterruptedException {
+        Assert.assertEquals("Add a new customer / nopCommerce administration", addCust.getPageTitle());
+        Thread.sleep(3000);
     }
+
     @When("User enter customer info")
-    public void user_enter_customer_info() {
+    public void user_enter_customer_info() throws InterruptedException {
 
+
+        String email = randomestring() + "@gmail.com";
+        addCust.setEmail(email);
+        addCust.setPassword("test123");
+        addCust.setFirstName("Anna");
+        addCust.setLastName("Kowalska");
+        addCust.setGender("F");
+        addCust.setDob("7/05/1985");
+        addCust.setCompanyName("CompanyName");
+
+        addCust.setCustomerRoles("Guest");
+        Thread.sleep(3000);
+
+        addCust.setManagerOfVendor("Vendor 2");
+        Thread.sleep(3000);
+
+        addCust.setAdminContent("This is testing .......");
     }
+
     @When("click on Save button")
-    public void click_on_save_button() {
-
+    public void click_on_Save_button() {
+        addCust.clickOnSave();
     }
+
     @Then("User can view confirmation message {string}")
-    public void user_can_view_confirmation_message(String string) {
-
+    public void user_can_view_confirmation_message(String string) throws InterruptedException {
+        Assert.assertTrue(driver.findElement(By.tagName("body")).getText()
+                .contains("The new customer has been added successfully"));
+        Thread.sleep(3000);
     }
-
-
 
     @Then("close browser")
-    public void close_browser() {
+    public void close_browser() throws InterruptedException {
+        Thread.sleep(3000);
         driver.quit();
 
     }
