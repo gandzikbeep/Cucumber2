@@ -146,22 +146,26 @@ public class Steps extends BaseClass {
     @Then("User should found Email in the Search table")
     public void user_should_found_email_in_the_search_table() {
         boolean status = searchCust.searchCustomerByEmail("victoria_victoria@nopCommerce.com");
-        Assert.assertEquals(true, status);
+        Assert.assertTrue(status);
     }
 
     // Search by First Name and Last Name ===============================================================
     @When("Enter customer FirstName")
     public void enter_customer_first_name() {
-
+        searchCust = new SearchCustomerPage(driver);
+        searchCust.setFirstName("Victoria");
     }
 
     @When("Enter customer LastName")
     public void enter_customer_last_name() {
+        searchCust.setLastName("Terces");
 
     }
 
     @Then("User should found Name in the Search table")
     public void user_should_found_name_in_the_search_table() {
+        boolean status = searchCust.searchCustomerByName("Victoria Terces");
+        Assert.assertTrue(status);
 
     }
 
