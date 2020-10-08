@@ -3,6 +3,8 @@ package stepDefinitions;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -15,41 +17,54 @@ public class Steps extends BaseClass {
 
     @Given("User launch Chrome browser")
     public void user_launch_chrome_browser() {
+        logger = Logger.getLogger("nopCommerce"); // Added logger
+        PropertyConfigurator.configure("Log4j.properties");   //Added logger
+
         System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "//Drivers/chromedriver.exe");
         driver = new ChromeDriver();
+        logger.info("************ Lauching browser ************");
         lp = new LoginPage(driver);
 
     }
 
     @When("User opens URL {string}")
     public void user_opens_url(String url) {
+        logger.info(" ************ Opening URL ************");
         driver.get(url);
         driver.manage().window().maximize();
     }
 
     @When("User enters Email as {string} and Password as {string}")
     public void user_enters_email_as_and_password_as(String email, String password) {
+        logger.info("************ Providing login details ************");
         lp.setUserName(email);
         lp.setPassword(password);
     }
 
     @When("Click on Login")
     public void click_on_login() {
+        logger.info("************ started login ************");
         lp.clickLogin();
     }
 
     @Then("Page Title should be {string}")
     public void page_title_should_be(String title) {
+
         if (driver.getPageSource().contains("Login was unsuccessful.")) {
             driver.close();
+            logger.info(" ************ Login passed ************");
+
             Assert.assertTrue(false);
         } else {
+            logger.info(" ************ Login failed ************");
+
             Assert.assertEquals(title, driver.getTitle());
         }
     }
 
     @When("User click on Log out link")
     public void user_click_on_log_out_link() throws InterruptedException {
+        logger.info(" ************ click on logout btn ************");
         lp.clickLogout();
         Thread.sleep(3000);
     }
@@ -58,14 +73,14 @@ public class Steps extends BaseClass {
 
     @Then("User can view Dashboard")
     public void user_can_view_dashboard() {
+        logger.info(" ************ After Login, user see Dashboard ************");
         addCust = new AddCustomerPage(driver);
         Assert.assertEquals("Dashboard / nopCommerce administration", addCust.getPageTitle());
-
-
     }
 
     @When("User click on customer Menu")
     public void user_click_on_customer_menu() throws InterruptedException {
+        logger.info("************ Clicking on Customer menu ************");
         addCust.clickOnCustomersMenu();
         Thread.sleep(3000);
 
@@ -73,24 +88,28 @@ public class Steps extends BaseClass {
 
     @When("click on customers Menu Item")
     public void click_on_customers_menu_item() {
+        logger.info("************ Clicking on Customer menu  - ITEM ************");
         addCust.clickOnCustomersMenuItem();
     }
 
     @When("click on Add new button")
     public void click_on_add_new_button() {
+        logger.info("************ Clicking on ADD NEW button - Adding a new customer ************");
         addCust.clickOnAddnew();
 
     }
 
     @Then("User can view Add new customer page")
     public void user_can_view_add_new_customer_page() throws InterruptedException {
+        logger.info("************ User is on Add new Customer page ************");
         Assert.assertEquals("Add a new customer / nopCommerce administration", addCust.getPageTitle());
         Thread.sleep(3000);
     }
 
     @When("User enter customer info")
     public void user_enter_customer_info() throws InterruptedException {
-
+        logger.info("************ Adding a new Customer ************");
+        logger.info("Providing customer details");
 
         String email = randomestring() + "@gmail.com";
         addCust.setEmail(email);
@@ -112,6 +131,7 @@ public class Steps extends BaseClass {
 
     @When("click on Save button")
     public void click_on_Save_button() {
+        logger.info("************ Saving customer data ************");
         addCust.clickOnSave();
     }
 
@@ -124,6 +144,7 @@ public class Steps extends BaseClass {
 
     @Then("close browser")
     public void close_browser() throws InterruptedException {
+        logger.info(" ************ Closing browser ************");
         Thread.sleep(3000);
         driver.quit();
 
@@ -132,6 +153,7 @@ public class Steps extends BaseClass {
 
     @When("Enter customer Email")
     public void enter_customer_email() {
+        logger.info("************ Searching customer by using email id  ************");
         searchCust = new SearchCustomerPage(driver);
         searchCust.setEmail("victoria_victoria@nopCommerce.com");
     }
@@ -145,6 +167,7 @@ public class Steps extends BaseClass {
 
     @Then("User should found Email in the Search table")
     public void user_should_found_email_in_the_search_table() {
+        logger.info("************ User should see the search expectations - EMAIL   ************");
         boolean status = searchCust.searchCustomerByEmail("victoria_victoria@nopCommerce.com");
         Assert.assertTrue(status);
     }
@@ -152,18 +175,22 @@ public class Steps extends BaseClass {
     // Search by First Name and Last Name ===============================================================
     @When("Enter customer FirstName")
     public void enter_customer_first_name() {
+        logger.info("************ User enters first name  ************");
         searchCust = new SearchCustomerPage(driver);
         searchCust.setFirstName("Victoria");
     }
 
     @When("Enter customer LastName")
     public void enter_customer_last_name() {
+        logger.info("************ Searching customer by using Name  ************");
+
         searchCust.setLastName("Terces");
 
     }
 
     @Then("User should found Name in the Search table")
     public void user_should_found_name_in_the_search_table() {
+        logger.info("************ User should see the search expectations - NAME (First and Last)   ************");
         boolean status = searchCust.searchCustomerByName("Victoria Terces");
         Assert.assertTrue(status);
 
