@@ -4,12 +4,15 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.WebDriver;
 import pageObcjects.AddCustomerPage;
 import pageObcjects.LoginPage;
+import pageObcjects.SearchCustomerPage;
 
 public class BaseClass {
 
     public WebDriver driver;
     public LoginPage lp;
     public AddCustomerPage addCust;
+    public SearchCustomerPage searchCust;
+
 
 
     //creating for generating random string for unique email
