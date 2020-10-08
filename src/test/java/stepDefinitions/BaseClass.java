@@ -7,6 +7,8 @@ import pageObcjects.AddCustomerPage;
 import pageObcjects.LoginPage;
 import pageObcjects.SearchCustomerPage;
 
+import java.util.Properties;
+
 public class BaseClass {
 
     public WebDriver driver;
@@ -14,7 +16,7 @@ public class BaseClass {
     public AddCustomerPage addCust;
     public SearchCustomerPage searchCust;
     public static Logger logger;
-
+    public Properties configProp;
 
 
     //creating for generating random string for unique email
