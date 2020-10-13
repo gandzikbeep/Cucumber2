@@ -18,5 +18,8 @@ public class WaitHelper {
         wait.until(ExpectedConditions.visibilityOf(element));
     }
 
+//    public void takeScreenshot(WebDriver driver) {
+//        TakesScreenshot takes Screenshots
+//    }
 
 }

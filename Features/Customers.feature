@@ -26,7 +26,7 @@ Feature: Customers
     When Click on search button
     Then User should found Email in the Search table
     And close browser
-
+#
 
   Scenario: Search Customer by Name
     Then User can view Dashboard

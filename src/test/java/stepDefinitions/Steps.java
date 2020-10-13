@@ -1,5 +1,8 @@
 package stepDefinitions;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -7,22 +10,59 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import pageObcjects.AddCustomerPage;
 import pageObcjects.LoginPage;
 import pageObcjects.SearchCustomerPage;
+import utilities.Screenshots;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 public class Steps extends BaseClass {
 
 
-    @Given("User launch Chrome browser")
-    public void user_launch_chrome_browser() {
+
+    @Before
+    public void setup() throws IOException {
+        //logger configuration
         logger = Logger.getLogger("nopCommerce"); // Added logger
         PropertyConfigurator.configure("Log4j.properties");   //Added logger
 
-        System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "//Drivers/chromedriver.exe");
-        driver = new ChromeDriver();
+        //Reading properties file
+        configProp = new Properties();
+        FileInputStream configPropfile = new FileInputStream("config.properties");
+        configProp.load(configPropfile);
+
+
+        String br = configProp.getProperty("browser");
+
+        if(br.equals("chrome")){
+            System.setProperty("webdriver.chrome.driver", configProp.getProperty("chromepath"));
+            driver = new ChromeDriver();
+        }
+         else if (br.equals("firefox")) {
+            System.setProperty("webdriver.gecko.driver", configProp.getProperty("firefoxpath"));
+            driver = new FirefoxDriver();
+        }
+         else if (br.equals("ie")) {
+            System.setProperty("webdriver.ie.driver", configProp.getProperty("iepath"));
+            driver = new InternetExplorerDriver();
+        }
+
         logger.info("************ Lauching browser ************");
+    }
+
+
+    @Given("User launch Chrome browser")
+    public void user_launch_chrome_browser() {
+
         lp = new LoginPage(driver);
 
     }
@@ -146,7 +186,7 @@ public class Steps extends BaseClass {
     public void close_browser() throws InterruptedException {
         logger.info(" ************ Closing browser ************");
         Thread.sleep(3000);
-        driver.quit();
+        driver.close();
 
     }
 // Searching Email using EmailId ============================================================
@@ -174,10 +214,11 @@ public class Steps extends BaseClass {
 
     // Search by First Name and Last Name ===============================================================
     @When("Enter customer FirstName")
-    public void enter_customer_first_name() {
+    public void enter_customer_first_name() throws IOException {
         logger.info("************ User enters first name  ************");
         searchCust = new SearchCustomerPage(driver);
         searchCust.setFirstName("Victoria");
+        Screenshots.takeScreenshot(driver);
     }
 
     @When("Enter customer LastName")
@@ -194,7 +235,18 @@ public class Steps extends BaseClass {
         boolean status = searchCust.searchCustomerByName("Victoria Terces");
         Assert.assertTrue(status);
 
+
+
     }
 
 
-}
+
+
+    @After
+    public void tearDown(Scenario scenario) {
+        driver.quit();}
+
+    }
+
+
+
