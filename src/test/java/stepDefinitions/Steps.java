@@ -1,6 +1,7 @@
 package stepDefinitions;
 
 import io.cucumber.java.After;
+import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
@@ -12,6 +13,7 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -19,14 +21,19 @@ import pageObcjects.AddCustomerPage;
 import pageObcjects.LoginPage;
 import pageObcjects.SearchCustomerPage;
 import utilities.Screenshots;
+import utilities.WaitHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.LocalTime;
 import java.util.Properties;
 
 public class Steps extends BaseClass {
-
+    WebDriver driver;
+//    Screenshots screenshots;
 
 
     @Before
@@ -40,31 +47,25 @@ public class Steps extends BaseClass {
         FileInputStream configPropfile = new FileInputStream("config.properties");
         configProp.load(configPropfile);
 
-
         String br = configProp.getProperty("browser");
 
-        if(br.equals("chrome")){
+        if (br.equals("chrome")) {
             System.setProperty("webdriver.chrome.driver", configProp.getProperty("chromepath"));
             driver = new ChromeDriver();
-        }
-         else if (br.equals("firefox")) {
+        } else if (br.equals("firefox")) {
             System.setProperty("webdriver.gecko.driver", configProp.getProperty("firefoxpath"));
             driver = new FirefoxDriver();
-        }
-         else if (br.equals("ie")) {
+        } else if (br.equals("ie")) {
             System.setProperty("webdriver.ie.driver", configProp.getProperty("iepath"));
             driver = new InternetExplorerDriver();
         }
-
         logger.info("************ Lauching browser ************");
     }
 
 
     @Given("User launch Chrome browser")
     public void user_launch_chrome_browser() {
-
         lp = new LoginPage(driver);
-
     }
 
     @When("User opens URL {string}")
@@ -75,7 +76,7 @@ public class Steps extends BaseClass {
     }
 
     @When("User enters Email as {string} and Password as {string}")
-    public void user_enters_email_as_and_password_as(String email, String password) {
+    public void user_enters_email_as_and_password_as(String email, String password) throws IOException {
         logger.info("************ Providing login details ************");
         lp.setUserName(email);
         lp.setPassword(password);
@@ -91,13 +92,11 @@ public class Steps extends BaseClass {
     public void page_title_should_be(String title) {
 
         if (driver.getPageSource().contains("Login was unsuccessful.")) {
-            driver.close();
-            logger.info(" ************ Login passed ************");
-
-            Assert.assertTrue(false);
-        } else {
             logger.info(" ************ Login failed ************");
 
+            Assert.fail();
+        } else {
+            logger.info(" ************ Login passed ************");
             Assert.assertEquals(title, driver.getTitle());
         }
     }
@@ -123,7 +122,6 @@ public class Steps extends BaseClass {
         logger.info("************ Clicking on Customer menu ************");
         addCust.clickOnCustomersMenu();
         Thread.sleep(3000);
-
     }
 
     @When("click on customers Menu Item")
@@ -187,7 +185,6 @@ public class Steps extends BaseClass {
         logger.info(" ************ Closing browser ************");
         Thread.sleep(3000);
         driver.close();
-
     }
 // Searching Email using EmailId ============================================================
 
@@ -202,7 +199,6 @@ public class Steps extends BaseClass {
     public void click_on_search_button() throws InterruptedException {
         searchCust.clickSearch();
         Thread.sleep(3000);
-
     }
 
     @Then("User should found Email in the Search table")
@@ -218,7 +214,6 @@ public class Steps extends BaseClass {
         logger.info("************ User enters first name  ************");
         searchCust = new SearchCustomerPage(driver);
         searchCust.setFirstName("Victoria");
-        Screenshots.takeScreenshot(driver);
     }
 
     @When("Enter customer LastName")
@@ -226,7 +221,6 @@ public class Steps extends BaseClass {
         logger.info("************ Searching customer by using Name  ************");
 
         searchCust.setLastName("Terces");
-
     }
 
     @Then("User should found Name in the Search table")
@@ -234,19 +228,40 @@ public class Steps extends BaseClass {
         logger.info("************ User should see the search expectations - NAME (First and Last)   ************");
         boolean status = searchCust.searchCustomerByName("Victoria Terces");
         Assert.assertTrue(status);
-
-
-
     }
-
-
 
 
     @After
-    public void tearDown(Scenario scenario) {
-        driver.quit();}
+    public void endTest(Scenario scenario) throws IOException {
 
+        if (scenario.isFailed()) {
+            logger.info("Scenario is failed");
+            Screenshots screenshots = new Screenshots(driver);
+            screenshots.newScr(scenario);
+            System.out.println("test");
+            System.out.println("test");
+        }
+        logger.info("End test");
+        driver.quit();
+
+
+
+        //screenshots.takeScrOnFail();
+      //  driver.quit();
     }
+
+//public void scrAfterStep(Scenario scenario) throws Exception {
+//    if(scenario.isFailed()){
+//        try {
+//        Screenshots screenshots = new Screenshots(driver);
+//        screenshots.getscreenshot(driver);
+//        } catch (FileNotFoundException ignored) {}
+//
+//    }
+//}
+
+
+}
 
 
 

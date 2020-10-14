@@ -75,8 +75,12 @@
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-html</artifactId>
             <version>0.2.7</version>
-
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ru.yandex.qatools.ashot</groupId>-->
+<!--            <artifactId>ashot</artifactId>-->
+<!--            <version>1.5.4</version>-->
+<!--        </dependency>-->
 
 
         <dependency>
