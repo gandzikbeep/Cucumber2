@@ -1,15 +1,15 @@
 Feature: Login
 
-#
-#  Scenario: Successful Login with Valid Credentials
-#    Given  User launch Chrome browser
-#    When User opens URL "https://admin-demo.nopcommerce.com/"
-#    And User enters Email as "admin@yourstore.com" and Password as "admin"
-#    And Click on Login
-#    Then Page Title should be "Dashboard / nopCommerce administration"
-#    When User click on Log out link
-#    Then Page Title should be "Your store. Login"
-#    And close browser
+
+  Scenario: Successful Login with Valid Credentials
+    Given  User launch Chrome browser
+    When User opens URL "https://admin-demo.nopcommerce.com/"
+    And User enters Email as "admin@yourstore.com" and Password as "admin"
+    And Click on Login
+    Then Page Title should be "Dashboard / nopCommerce administration"
+    When User click on Log out link
+    Then Page Title should be "Your store. Login"
+    And close browser
 
 
   Scenario Outline: Login Data Driven
@@ -24,6 +24,6 @@ Feature: Login
 
     Examples:
       | email               | password |
-      | admin@yourstore.com | admin777   |
+      | admin@yourstore.com | admin   |
 #      | admin1@yourstore.com | admin123 |
 
